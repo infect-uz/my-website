@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infectuz 2025</title>
+    <title>infect.uz 2025</title>
     <style>
         body {
             margin: 0;
-            overflow: hidden; /* Убирает скролл */
+            overflow: hidden;
             font-family: Arial, sans-serif;
+            background-color: black;
             color: white;
         }
         canvas {
@@ -17,16 +18,42 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* Фон за текстом */
+            z-index: -1;
         }
         h1 {
             font-size: 4rem;
+            text-align: center;
+            margin-top: 10%;
             color: white;
             text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff4444, 0 0 40px #ff4444;
             animation: glow 1.5s infinite alternate;
+        }
+        #countdown {
+            font-size: 2rem;
             text-align: center;
-            margin: 0;
-            padding-top: 20%;
+            margin-top: 20px;
+        }
+        #finalMessage {
+            display: none;
+            text-align: center;
+            font-size: 2rem;
+            margin-top: 20%;
+            color: #ffffff;
+            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff55, 0 0 40px #00ff55;
+            animation: neonGlow 1.5s infinite alternate;
+        }
+        #backgroundText {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            text-align: center;
+            color: white;
+            opacity: 0.8;
+            z-index: -1;
+            text-shadow: 0 0 10px #0000ff, 0 0 20px #0000ff, 0 0 30px #5555ff, 0 0 40px #5555ff;
+            animation: neonGlow 1.5s infinite alternate;
         }
         @keyframes glow {
             from {
@@ -36,56 +63,32 @@
                 text-shadow: 0 0 20px #ff0000, 0 0 30px #ff5555, 0 0 40px #ff5555, 0 0 50px #ff7777;
             }
         }
-        #countdown {
-            font-size: 2rem;
-            text-align: center;
-            margin-top: 20px;
+        @keyframes neonGlow {
+            from {
+                text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff55, 0 0 40px #00ff55;
+            }
+            to {
+                text-shadow: 0 0 20px #00ff00, 0 0 30px #55ff55, 0 0 40px #55ff77, 0 0 50px #55ff77;
+            }
         }
     </style>
 </head>
 <body>
-    <canvas id="matrixRain"></canvas>
-    <h1>Infectuz 2025</h1>
+    <canvas id="fireworksCanvas"></canvas>
+    <canvas id="snowCanvas"></canvas>
+    <h1>infect.uz 2025</h1>
     <div id="countdown">Loading...</div>
+    <div id="finalMessage">
+        <p>🎉 Happy 2025!</p>
+        <p>Let's make this year unforgettable together</p>
+        <p><strong>INFECT.UZ</strong></p>
+    </div>
+    <div id="backgroundText">Your Security - Your Future!</div>
 
     <script>
-        // Matrix Rain Animation
-        const canvas = document.getElementById('matrixRain');
-        const ctx = canvas.getContext('2d');
-
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const matrixChars = '01';
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
-
-        const drops = Array(Math.floor(columns)).fill(1);
-
-        function drawMatrixRain() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#ff0000'; // Красный цвет символов
-            ctx.font = `${fontSize}px monospace`;
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-
-                drops[i]++;
-            }
-        }
-
-        setInterval(drawMatrixRain, 50);
-
         // Countdown Timer
         function countdown() {
-            const targetDate = new Date('January 1, 2025 00:00:00').getTime();
+            const targetDate = new Date('December 31, 2024 23:59:59').getTime();
             const now = new Date().getTime();
             const distance = targetDate - now;
 
@@ -99,17 +102,142 @@
 
             if (distance < 0) {
                 clearInterval(interval);
-                document.getElementById('countdown').innerHTML = "Happy 2025!";
+                triggerFinalMessage();
             }
         }
 
         const interval = setInterval(countdown, 1000);
 
+        // Trigger Final Message and Animations
+        function triggerFinalMessage() {
+            document.getElementById('countdown').style.display = 'none';
+            document.querySelector('h1').style.display = 'none';
+            document.getElementById('finalMessage').style.display = 'block';
+            startFireworks();
+            startSnow();
+        }
+
+        // Fireworks Animation
+        const fireworksCanvas = document.getElementById('fireworksCanvas');
+        const fireworksCtx = fireworksCanvas.getContext('2d');
+
+        fireworksCanvas.width = window.innerWidth;
+        fireworksCanvas.height = window.innerHeight;
+
+        const particles = [];
+
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function createParticle(x, y, color) {
+            const particle = {
+                x,
+                y,
+                vx: random(-2, 2),
+                vy: random(-3, -1),
+                radius: random(2, 4),
+                alpha: 1,
+                color
+            };
+            particles.push(particle);
+        }
+
+        function drawFireworks() {
+            fireworksCtx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+
+            particles.forEach((particle, index) => {
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.alpha -= 0.01;
+
+                if (particle.alpha <= 0) {
+                    particles.splice(index, 1);
+                } else {
+                    fireworksCtx.beginPath();
+                    fireworksCtx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+                    fireworksCtx.fillStyle = `rgba(${particle.color}, ${particle.alpha})`;
+                    fireworksCtx.fill();
+                }
+            });
+
+            requestAnimationFrame(drawFireworks);
+        }
+
+        function startFireworks() {
+            setInterval(() => {
+                const x = random(0, fireworksCanvas.width);
+                const y = random(0, fireworksCanvas.height / 2);
+                const colors = [
+                    '255, 0, 0',    // Red
+                    '0, 255, 0',    // Green
+                    '0, 0, 255',    // Blue
+                    '255, 0, 255'   // Purple
+                ];
+                const color = colors[Math.floor(random(0, colors.length))];
+
+                for (let i = 0; i < 50; i++) {
+                    createParticle(x, y, color);
+                }
+            }, 500);
+
+            drawFireworks();
+        }
+
+        // Snow Animation
+        const snowCanvas = document.getElementById('snowCanvas');
+        const snowCtx = snowCanvas.getContext('2d');
+
+        snowCanvas.width = window.innerWidth;
+        snowCanvas.height = window.innerHeight;
+
+        const snowflakes = [];
+
+        function createSnowflake() {
+            const snowflake = {
+                x: random(0, snowCanvas.width),
+                y: random(0, snowCanvas.height),
+                radius: random(2, 5),
+                speed: random(1, 3),
+                opacity: random(0.5, 1)
+            };
+            snowflakes.push(snowflake);
+        }
+
+        function drawSnow() {
+            snowCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+
+            snowflakes.forEach((snowflake, index) => {
+                snowflake.y += snowflake.Speed;
+
+                if (snowflake.y > snowCanvas.height) {
+                    snowflakes.splice(index, 1);
+                    createSnowflake();
+                } else {
+                    snowCtx.beginPath();
+                    snowCtx.arc(snowflake.X, snowflake.y, snowflake.radius, 0, Math.PI * 2);
+                    snowCtx.fillStyle = `rgba(255, 255, 255, ${snowflake.opacity})`;
+                    snowCtx.fill();
+                }
+            });
+
+            requestAnimationFrame(drawSnow);
+        }
+
+        function startSnow() {
+            for (let i = 0; i < 200; i++) {
+                createSnowflake();
+            }
+            drawSnow();
+        }
+
         // Adjust canvas on window resize
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            fireworksCanvas.width = window.innerWidth;
+            fireworksCanvas.height = window.innerHeight;
+            snowCanvas.width = window.innerWidth;
+            snowCanvas.height = window.innerHeight;
         });
     </script>
 </body>
-</html>
+</HTML>
